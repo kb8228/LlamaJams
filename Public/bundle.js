@@ -28524,8 +28524,7 @@
 	var React = __webpack_require__(1);
 	var Search = __webpack_require__(170);
 	var Song = __webpack_require__(171);
-	var DeleteBtn = __webpack_require__(172);
-	var Player = __webpack_require__(173);
+	var Player = __webpack_require__(172);
 	var Firebase = __webpack_require__(162);
 
 	var SongEntry = React.createClass({
@@ -28692,7 +28691,15 @@
 	  },
 	  handleDelete: function handleDelete(e) {
 	    e.preventDefault();
-	    alert("delete clicked!");
+	    var fbref = this.firebaseRef;
+
+	    fbref.once('value', function (snapshot) {
+	      snapshot.forEach(function (childSnapshot) {
+	        if (childSnapshot.val().songUrl === e.target.value) {
+	          fbref.child(childSnapshot.key()).remove();
+	        }
+	      });
+	    });
 	  },
 	  render: function render() {
 	    var self = this;
@@ -28819,7 +28826,7 @@
 	      ),
 	      React.createElement(
 	        'button',
-	        { onClick: this.props.onDelete },
+	        { value: this.props.data.songUrl, onClick: this.props.onDelete },
 	        'X'
 	      )
 	    );
@@ -28830,49 +28837,6 @@
 
 /***/ },
 /* 172 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	{/* KS - make a input type=button here that onClick will call this.props.handleDelete method (not written yet) with param this.props.data.songUrl */}
-	var DeleteBtn = React.createClass({
-	    displayName: 'DeleteBtn',
-
-	    render: function render() {
-	        return React.createElement(
-	            'button',
-	            { onClick: this.props.onDelete },
-	            'X'
-	        );
-	    }
-	});
-
-	module.exports = DeleteBtn;
-
-	{/* Example of usage:
-	     var ParentComponent = React.createClass({ // this is SongEntry
-	         render: function(){
-	             return (
-	                 <ChildComponent onSomeEvent={this.handleThatEvent} />;
-	             )
-	         },
-	         handleThatEvent: function(e){
-	              //update state, etc.
-	         }
-	     });
-	      var ChildComponent = React.createClass({ // this is DeleteBtn
-	         render: function(){
-	             return (
-	                <input type="button" onClick={this.props.onSomeEvent} value="Click Me!" />
-	             )
-	         }
-	     });
-	    */}
-
-/***/ },
-/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
